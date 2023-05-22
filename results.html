@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>People have paid £1 to see how many people have paid £1</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .counter {
+            text-align: center;
+        }
+        
+        .counter h1 {
+            font-size: 6em;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .counter h2 {
+            font-size: 2em;
+            color: #777;
+        }
+    </style>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-firestore.js"></script>
+</head>
+<body>
+    <div class="counter" id="counter">
+        <h1>2489</h1>
+        <h2>People have paid £1 to see how many people have paid £1</h2>
+    </div>
+
+    <script>
+        // Firebase configuration
+        var firebaseConfig = {
+            // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDhBVxhX35cHjsBBX68awxu8hhyecJqodc",
+  authDomain: "pay-1-pound.firebaseapp.com",
+  projectId: "pay-1-pound",
+  storageBucket: "pay-1-pound.appspot.com",
+  messagingSenderId: "521605091569",
+  appId: "1:521605091569:web:835095a21047a752a05950",
+  measurementId: "G-GZDL3GT6M9"
+};
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        var db = firebase.firestore();
+
+        // Get a reference to the counter document
+        var counterRef = db.collection("counters").doc("visitorCount");
+
+        counterRef.get().then((doc) => {
+            if (doc.exists) {
+                // Increment counter
+                counterRef.update({
+                    count: firebase.firestore.FieldValue.increment(1)
+                });
+            } else {
+                // Document doesn't exist, set initial count
+                counterRef.set({ count: 2489 });
+            }
+        }).catch((error) => {
+            console.log("Error getting document:", error);
+        });
+
+        // Listen for updates to the counter document
+        counterRef.onSnapshot((doc) => {
+            // Update the counter on the page
+            document.querySelector('#counter h1').textContent = doc.data().count;
+        });
+    </script>
+</body>
+</html>
