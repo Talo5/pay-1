@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Pay £1 to see how many people paid £1</title>
+    <style>
+        /* Add your custom styles here */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+        
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333333;
+        }
+        
+        .checkbox {
+            margin-bottom: 15px;
+        }
+        
+        .paypal-button {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .counter {
+            text-align: center;
+            font-size: 18px;
+            color: #777777;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pay £1 to see how many people paid £1</h1>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" id="payment-awareness">
+                I'm aware I'm paying £1 JUST to see how many people paid £1
+            </label>
+        </div>
+        <div class="paypal-button">
+            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                <input type="hidden" name="cmd" value="_s-xclick">
+                <input type="hidden" name="hosted_button_id" value="4LUYAWTABLT4A">
+                <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_paynow_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+                <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+            </form>
+        </div>
+        <div class="counter" id="payment-counter">You're almost there, just pay £1</div>
+    </div>
+
+    <script>
+        // Function to fetch the payment counter value from Google Sheets API
+        function fetchPaymentCounter() {
+            const apiKey = "AIzaSyCcSRlNMIhgCKlcb6P8NoIbnSzA811GLmM";
+            const sheetId = "1bH5ZYQI2is6BHl7kIuhNFbbrfRpfNjL9uBoW-vyfDv4";
+            const endpoint = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/A:A?key=${apiKey}`;
+
+            fetch(endpoint)
+                .then(response => response.json())
+                .then(data => {
+                    const rowCount = data.values ? data.values.length : 0;
+                    document.getElementById("payment-counter").textContent = `Total payments: ${rowCount}`;
+                })
+                .catch(error => console.error("Error fetching payment counter:", error));
+        }
+
+        // Check if payment awareness checkbox is checked
+        document.getElementById("payment-awareness").addEventListener("change", function() {
+            if (this.checked) {
+                fetchPaymentCounter();
+            } else
